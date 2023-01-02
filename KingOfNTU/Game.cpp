@@ -1,15 +1,20 @@
 #include "Game.h"
 #include "TextureManager.h"
-#include "GameObject.h"
 #include "Map.h"
 
-GameObject* player;
-/*
-SDL_Texture* playerTex;
-SDL_Rect srcR, destR;
-*/
-SDL_Renderer* Game::renderer = nullptr;
+#include "Components.h"
+#include "Vector2D.h"
+
 Map* map;
+Manager manager;
+
+SDL_Renderer* Game::renderer = nullptr;
+SDL_Event Game::event;
+
+
+auto& newPlayer(manager.addEntity());
+
+
 
 Game::Game()
 {}
@@ -46,14 +51,17 @@ void Game::init(const char* title, int width, int height, bool fullscreen)
 	*/
 
 	//Add more according to what objects are added
-	player = new GameObject("img/yeh.png", 0, 0);
 	map = new Map();
+
+	newPlayer.addComponent<TransformComponent>();
+	newPlayer.addComponent<SpriteComponent>("img/yeh.png");
+	newPlayer.addComponent<KeyboardController>();
 }
 
 
 void Game::handleEvents()
 {
-	SDL_Event event;
+
 
 	SDL_PollEvent(&event);
 
@@ -70,16 +78,14 @@ void Game::handleEvents()
 void Game::update()
 {
 	cnt++;
-	/*
-	destR.h = 64;
-	destR.w = 64;
-	destR.x = cnt;
-	*/
 
 	//Add more according to what objects need to be updated
-	player->Update();
-	//map->LoadMap();
-	std::cout << cnt << std::endl;
+	
+	manager.refresh();
+	manager.update();
+	std::cout << newPlayer.getComponent<TransformComponent>().position.x << "," << newPlayer.getComponent<TransformComponent>().position.y << std::endl;
+
+
 }
 
 void Game::render()
@@ -88,7 +94,7 @@ void Game::render()
 	//SDL_RenderCopy(renderer, playerTex, NULL, &destR);
 	// 
 	//Add more according to what objects need to be rendered
-	player->Render();
+	manager.draw();
 	map->DrawMap();
 	SDL_RenderPresent(renderer);
 }

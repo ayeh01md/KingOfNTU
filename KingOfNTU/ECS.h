@@ -32,11 +32,11 @@ class Component
 {
 public:
 	Entity* entity;
-	virtual void init(){}
-	virtual void update(){}
-	virtual void draw (){}
+	virtual void init() {}
+	virtual void update() {}
+	virtual void draw() {}
 
-	virtual ~Component(){}
+	virtual ~Component() {}
 
 
 };
@@ -56,7 +56,7 @@ public:
 	void update()
 	{
 		for (auto& c : components) c->update();
-		
+
 	}
 
 	void draw()
@@ -64,15 +64,15 @@ public:
 		for (auto& c : components) c->draw();
 	}
 	bool isActive() { return active; }
-	void destroy() { active = false;}
+	void destroy() { active = false; }
 
 	//Check if an entity has a component
 	template <typename T> bool hasComponent() const
 	{
-		return componentBitSet[getComponentTypeID<T>];
+		return componentBitSet[getComponentTypeID<T>()];
 	}
 
-	template <typename T,typename...TArgs>
+	template <typename T, typename...TArgs>
 	T& addComponent(TArgs&&...mArgs)
 	{
 		T* c(new T(std::forward<TArgs>(mArgs)...));

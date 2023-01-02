@@ -3,6 +3,7 @@
 #include "ECS.h"
 #include "Components.h"
 
+
 class KeyboardController :public Component
 {
 public:
@@ -21,9 +22,10 @@ public:
 			{
 			case SDLK_w:
 				transform->velocity.y = -1;
+				
 				break;
 			case SDLK_a:
-				transform->velocity.x = -1;
+					transform->velocity.x = -1;
 				break;
 			case SDLK_s:
 				transform->velocity.y = 1;

@@ -4,6 +4,7 @@
 
 #include "Components.h"
 #include "Vector2D.h"
+#include "Collision.h"
 
 Map* map;
 Manager manager;
@@ -13,7 +14,7 @@ SDL_Event Game::event;
 
 
 auto& newPlayer(manager.addEntity());
-
+auto& wall(manager.addEntity());
 
 
 Game::Game()
@@ -56,6 +57,14 @@ void Game::init(const char* title, int width, int height, bool fullscreen)
 	newPlayer.addComponent<TransformComponent>();
 	newPlayer.addComponent<SpriteComponent>("img/yeh.png");
 	newPlayer.addComponent<KeyboardController>();
+	newPlayer.addComponent<ColliderComponent>("Player");
+
+
+	
+	wall.addComponent<TransformComponent>(800.0f, 300.0f, 235, 160, 1);
+	wall.addComponent<SpriteComponent>("img/square.png");
+	wall.addComponent<ColliderComponent>("wall");
+	
 }
 
 
@@ -83,6 +92,13 @@ void Game::update()
 	
 	manager.refresh();
 	manager.update();
+	
+	if (Collision::CollisionDetect(newPlayer.getComponent<ColliderComponent>().collider, wall.getComponent<ColliderComponent>().collider))
+	{
+		std::cout << "wall hit" << std::endl;
+	}
+
+
 	std::cout << newPlayer.getComponent<TransformComponent>().position.x << "," << newPlayer.getComponent<TransformComponent>().position.y << std::endl;
 
 
@@ -94,8 +110,9 @@ void Game::render()
 	//SDL_RenderCopy(renderer, playerTex, NULL, &destR);
 	// 
 	//Add more according to what objects need to be rendered
-	manager.draw();
+	
 	map->DrawMap();
+	manager.draw();
 	SDL_RenderPresent(renderer);
 }
 void Game::clean()

@@ -28,6 +28,10 @@ Map::Map()
 	dest.x = dest.y = 0;
 }
 
+Map::~Map()
+{
+	SDL_DestroyTexture(floor);
+}
 void Map::LoadMap(int arr[9][16])
 {
 	for (int i = 0; i < 9; i++)

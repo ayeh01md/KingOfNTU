@@ -1,63 +1,52 @@
-/*
 #pragma once
 
+#include "ECS.h"
 #include "Components.h"
-#include "SDL.h"
+#include "Vector2D.h"
 
 class ProjectileComponent : public Component
 {
-private:
-	TransformComponent* transform;
-	SDL_Texture* texture;
-	SDL_Rect srcRect, destRect;
-	int speed = 5;
-	Vector2D velocity;
-
 public:
-	ProjectileComponent() = default;
-	ProjectileComponent(const char* path)
-	{
-		setTex(path);
-	}
-
-	void setTex(const char* path)
-	{
-		texture = TextureManager::LoadTexture(path);
-	}
+	ProjectileComponent(int rng, int sp, Vector2D vel) : range(rng), speed(sp), velocity(vel)
+	{}
+	~ProjectileComponent()
+	{}
 
 	void init() override
 	{
 		transform = &entity->getComponent<TransformComponent>();
 		transform->velocity = velocity;
-
-		srcRect.x = 0;
-		srcRect.y = 0;
-
-		srcRect.w = 30;
-		srcRect.h = 12;
-
-		destRect.w = 30;
-		destRect.h = 12;
 	}
 
 	void update() override
 	{
-		if (transform->position.x > 1280)
+		distance += speed;
+
+		if (distance > range)
 		{
+			std::cout << "Out of Range" << std::endl;
 			entity->destroy();
 		}
-		else
+		/*
+		else if (transform->position.x > Game::camera.x + Game::camera.w ||
+			transform->position.x < Game::camera.x ||
+			transform->position.y > Game::camera.y + Game::camera.h ||
+			transform->position.y < Game::camera.y)
 		{
-			destRect.x = (int)transform->position.x;
-			destRect.y = (int)transform->position.y;
+			std::cout << "Out of bounds!" << std::endl;
+			entity->destroy();
 		}
-
+		*/
 	}
 
-	void draw() override
-	{
-		TextureManager::Draw(texture, srcRect, destRect);
-	}
+private:
+
+	TransformComponent* transform;
+
+	int range = 0;
+	int speed = 0;
+	int distance = 0;
+	Vector2D velocity;
+
 
 };
-*/

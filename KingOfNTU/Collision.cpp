@@ -1,5 +1,5 @@
 #include "Collision.h"
-#include <iostream>
+#include "ColliderComponent.h"
 
 bool Collision::CollisionDetect(const SDL_Rect& recA, const SDL_Rect& recB)
 {
@@ -8,10 +8,22 @@ bool Collision::CollisionDetect(const SDL_Rect& recA, const SDL_Rect& recB)
 		recA.y + recA.h >= recB.y &&
 		recB.y + recB.h >= recA.y)
 	{
-		//std::cout << recA.x + recA.w << ">=" << recB.x;
 		return true;
 	}
 
 	return false;
 
+}
+
+bool Collision::CollisionDetect(const ColliderComponent& colA, const ColliderComponent& colB)
+{
+	if (CollisionDetect(colA.collider, colB.collider))
+	{
+		//std::cout << colA.tag << "hit: " << colB.tag << std::endl;
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }

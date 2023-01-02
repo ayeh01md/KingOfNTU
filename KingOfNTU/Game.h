@@ -3,6 +3,10 @@
 #include"SDL.h"
 #include "SDL_image.h"
 #include <iostream>
+#include <vector>
+
+class AssetManager;
+class ColliderComponent;
 
 class Game
 {
@@ -20,9 +24,19 @@ public:
 
 	static SDL_Renderer* renderer;
 	static SDL_Event event;
+	
+	static bool isRunning;
+	static AssetManager* assets;
+	enum groupLabels : std::size_t
+	{
+		groupMap,
+		groupPlayers,
+		groupColliders,
+		groupEnemies,
+		groupProjectiles
+	};
 
 private:
-	bool isRunning = false;
 	int cnt = 0;
 	SDL_Window* window;
 

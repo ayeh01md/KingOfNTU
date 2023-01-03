@@ -46,6 +46,10 @@ void Game::init(const char* title, int width, int height, bool fullscreen)
 			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 		}
 		isRunning = true;
+		if (TTF_Init() == -1)
+		{
+			std::cout << "Error : SDL_TTF" << std::endl;
+		}
 	}
 	/*
 	SDL_Surface* tmpSurface = IMG_Load("img/yeh.png");
@@ -58,7 +62,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)
 
 	assets->AddTexture("player1", p1path);
 	assets->AddTexture("player2", p2path);
-	assets->AddFont("arial", "font/calculator.ttf", 50);
+	assets->AddFont("arial", "font/calculator.ttf", 100);
 
 
 
@@ -83,7 +87,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)
 
 	SDL_Color black = { 0, 0, 0,0 };
 
-	label.addComponent<UILabel>(800, 10, "Test String", "arial", black);	
+	label.addComponent<UILabel>(595, 50, "Test String", "arial", black);	
 }
 
 
@@ -122,13 +126,9 @@ void Game::update()
 	SDL_Rect playerCol2 = newPlayer2.getComponent<ColliderComponent>().collider;
 
 	std::stringstream ss;
-	ss << "Player position: " << frameStart;
+	ss << frameStart;
 	label.getComponent<UILabel>().SetLabelText(ss.str(), "arial");
 
-	if (frameStart == 0)
-	{
-		isRunning = false;
-	}
 
 	manager.refresh();
 	manager.update();
@@ -194,7 +194,7 @@ void Game::render()
 	//SDL_RenderCopy(renderer, playerTex, NULL, &destR);
 	// 
 	//Add more according to what objects need to be rendered
-	if (p1hp <= 0 || p2hp <= 0) {
+	if (p1hp <= 0 || p2hp <= 0 || frameStart <=0)   {
 		scene->drawScene(4);
 		scene->Render();
 		p1blood->Render(0);
@@ -206,6 +206,7 @@ void Game::render()
 	p1blood->Render(p1hp);
 	p2blood->Render(p2hp);
 
+	manager.draw();
 
 	for (auto& p : players)
 	{
@@ -216,11 +217,12 @@ void Game::render()
 		std::cout << "asd" << std::endl;
 		pr->draw();
 	}
-
+	
 
 	label.draw();
-	manager.draw();
+	
 	SDL_RenderPresent(renderer);
+	//label.draw();
 }
 void Game::clean()
 {

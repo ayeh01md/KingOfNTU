@@ -183,45 +183,46 @@ void putMedia(scenario s)
         Back.work = 0;
         Back.mCurrentSprite = BUTTON_SPRITE_MOUSE_OUT;
 
-        cout << p1 << "," << p2 << endl;
-        if (p1 != 0)
-        {
-            SDL_Color textColor = { 0, 0, 0 };
-            if (!gTextTexture1.loadFromRenderedText("Player1: Yeh (create another gTextTexture and render it) ", textColor))
+        
+            if (p1 != 0)
             {
-                printf("Failed to render text texture!\n");
+                SDL_Color textColor = { 0, 0, 0 };
+                if (!gTextTexture1.loadFromRenderedText("Player1: Yeh (create another gTextTexture and render it) ", textColor))
+                {
+                    printf("Failed to render text texture!\n");
+                }
+                gTextTexture1.render((SCREEN_WIDTH - gTextTexture1.getWidth()) / 2, (SCREEN_HEIGHT - gTextTexture1.getHeight()) / 2); //edit this to change location
+                if (p2 == 0)
+                {
+                    p2 = getid.getp1();
+                }
             }
-            gTextTexture1.render((SCREEN_WIDTH - gTextTexture1.getWidth()) / 2, (SCREEN_HEIGHT - gTextTexture1.getHeight()) / 2); //edit this to change location
-            if (p2 == 0)
+            else
             {
-                p2 = getid.getp1();
+                p1 = getid.getp1();
+                //try
+
+                ////Clear screen
+                //SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+                //SDL_RenderClear(gRenderer);
+
+                ////Render current frame
+                //gTextTexture1.render((SCREEN_WIDTH - gTextTexture1.getWidth()) / 2, (SCREEN_HEIGHT - gTextTexture1.getHeight()) / 2);
+
+                ////Update screen
+                //SDL_RenderPresent(gRenderer);
+                //try
             }
-        }
-        else
-        {
-            p1 = getid.getp1();
-            //try
 
-            ////Clear screen
-            //SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
-            //SDL_RenderClear(gRenderer);
-
-            ////Render current frame
-            //gTextTexture1.render((SCREEN_WIDTH - gTextTexture1.getWidth()) / 2, (SCREEN_HEIGHT - gTextTexture1.getHeight()) / 2);
-
-            ////Update screen
-            //SDL_RenderPresent(gRenderer);
-            //try
-        }
-
-        cout << p1 << "," << p2 << endl;
+            cout << p1 << "," << p2 << endl;
 
 
-        cout << p1 << "," << p2 << endl;
-        if (p1 != 0 && p2 != 0) {
-            gamemode = 0;
-        }
+            cout << p1 << "," << p2 << endl;
+            if (p1 != 0 && p2 != 0) {
+                gamemode = 0;
+            }
 
+        
         break;
     case playing:
         gSceneTexture.free();
@@ -230,8 +231,8 @@ void putMedia(scenario s)
         gSceneTexture.render((gWindow.getWidth() - gSceneTexture.getWidth()) / 2, (gWindow.getHeight() - gSceneTexture.getHeight()) / 2);
         break;
 
-        /*case gameover:
-            break;*/
+        case gameover:
+            break;
     }
 }
 
@@ -442,17 +443,18 @@ int main(int argc, char* args[]) {
 
 
 
+/*
 
-
-
-
+//Commented Above main functio, Ltexture,Lwindow(all cpp)
 
 
 #include "SDL.h"
 #include "Game.h"
 
+int const SCREEN_WIDTH = 1280;
+int const SCREEN_HEIGHT = 720;
+Game* game = nullptr;
 
-/*
 int main(int argc, char* argv[])
 {
 	//Limiting Frames

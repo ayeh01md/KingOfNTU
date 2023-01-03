@@ -1,21 +1,23 @@
 #include "Game.h"
 #include "TextureManager.h"
-#include "GameObject.h"
-#include "Map.h"
+#include "Components.h"
+#include "Vector2D.h"
+#include "GameScene.h"
+#include "Collision.h"
+#include "blood.h"
+#include "blood2.h"
+Manager manager;
 
-GameObject* player;
-/*
-SDL_Texture* playerTex;
-SDL_Rect srcR, destR;
-*/
+GameScene* scene;
+blood* p1blood;
+blood2* p2blood;
 SDL_Renderer* Game::renderer = nullptr;
-Map* map;
+SDL_Event Game::event;
 
-Game::Game()
-{}
+auto& newPlayer(manager.addEntity());
+auto& newPlayer2(manager.addEntity());
 
-Game::~Game()
-{}
+
 
 void Game::init(const char* title, int width, int height, bool fullscreen)
 {
@@ -35,7 +37,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)
 
 		if (renderer)
 		{
-			SDL_SetRenderDrawColor(renderer,255,255,255,255);
+			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 		}
 		isRunning = true;
 	}
@@ -46,14 +48,27 @@ void Game::init(const char* title, int width, int height, bool fullscreen)
 	*/
 
 	//Add more according to what objects are added
-	player = new GameObject("img/yeh.png", 0, 0);
-	map = new Map();
+	scene = new GameScene(3);
+	p1blood = new blood(p1hp);
+	p2blood = new blood2(p2hp);
+
+	newPlayer.addComponent<TransformComponent>(100 , 0);
+	newPlayer.addComponent<SpriteComponent>(p1path);
+	newPlayer.addComponent<BulletSpriteComponent>(p1bpath);
+	newPlayer.addComponent<KeyboardController1>();
+	newPlayer.addComponent<ColliderComponent>("player");
+
+	newPlayer2.addComponent<TransformComponent>(1000 , 0);
+	newPlayer2.addComponent<SpriteComponent>(p2path);
+	newPlayer2.addComponent<BulletSpriteComponent>(p2bpath);
+	newPlayer2.addComponent<KeyboardController2>();
+	newPlayer2.addComponent<ColliderComponent>("player2");
 }
 
 
 void Game::handleEvents()
 {
-	SDL_Event event;
+
 
 	SDL_PollEvent(&event);
 
@@ -70,26 +85,66 @@ void Game::handleEvents()
 void Game::update()
 {
 	cnt++;
-	/*
-	destR.h = 64;
-	destR.w = 64;
-	destR.x = cnt;
-	*/
 
 	//Add more according to what objects need to be updated
-	player->Update();
-	//map->LoadMap();
-	std::cout << cnt << std::endl;
+
+	manager.refresh();
+	manager.update();
+	
+
+
+	if (newPlayer.getComponent<BulletSpriteComponent>().fire) {
+		std::cout << "fire" << std::endl;
+		if (Collision::CollisionDetect(newPlayer2.getComponent<ColliderComponent>().collider, newPlayer.getComponent<BulletSpriteComponent>().destRect))
+		{
+			std::cout << "Hit player2!" << std::endl;
+			p2hp--;
+			std::cout << p2hp << std::endl;
+		}
+			
+	}
+
+	if (newPlayer2.getComponent<BulletSpriteComponent>().fire) {
+		std::cout << "fire" << std::endl;
+		if (Collision::CollisionDetect(newPlayer.getComponent<ColliderComponent>().collider, newPlayer2.getComponent<BulletSpriteComponent>().destRect))
+		{
+			
+			std::cout << "Hit player1!" << std::endl;
+			p1hp--;
+			std::cout << p1hp << std::endl;
+		}
+
+	}
+	
+
+
+
+
+	//std::cout <<"p1 : " << newPlayer.getComponent<TransformComponent>().position.x << "," << newPlayer.getComponent<TransformComponent>().position.y << std::endl;
+	//std::cout <<"p2 : " << newPlayer2.getComponent<TransformComponent>().position.x << "," << newPlayer2.getComponent<TransformComponent>().position.y << std::endl;
+
 }
 
 void Game::render()
 {
+
 	SDL_RenderClear(renderer);
 	//SDL_RenderCopy(renderer, playerTex, NULL, &destR);
 	// 
 	//Add more according to what objects need to be rendered
-	player->Render();
-	map->DrawMap();
+	if (p1hp <= 0 || p2hp <= 0) {
+		scene->drawScene(4);
+		scene->Render();
+		p1blood->Render(0);
+		p2blood->Render(0);
+		SDL_RenderPresent(renderer);
+		return;
+	}
+	scene->Render();
+	p1blood->Render(p1hp);
+	p2blood->Render(p2hp);
+	manager.draw();
+	
 	SDL_RenderPresent(renderer);
 }
 void Game::clean()
@@ -97,6 +152,6 @@ void Game::clean()
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(renderer);
 	SDL_Quit();
-	//std::cout << "Game Cleaned" << std::endl;
+	std::cout << "Game Cleaned" << std::endl;
 
 }

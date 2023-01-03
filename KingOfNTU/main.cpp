@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
 	Uint32 frameStart;
 	int frameTime;
 
-	game = new Game();
+	game = new Game(1, 4);
 
 	game->init("game",1280, 720, false);
 

@@ -17,7 +17,7 @@ public:
 	int height = 235;
 	int width = 160;
 	int scale = 1;
-
+	bool jump = false;
 	int speed = 5;
 
 	TransformComponent()
@@ -50,6 +50,10 @@ public:
 	void update() override
 	{
 		position.x += velocity.x * speed;
+		if (position.y > 400) {
+			if (jump)position.y += velocity.y * speed;
+			else return;
+		}
 		position.y += velocity.y * speed;
 	}
 };

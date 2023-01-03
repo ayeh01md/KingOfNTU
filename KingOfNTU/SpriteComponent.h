@@ -78,7 +78,6 @@ public:
 			srcRect.x = (animIndex*transform->width) + (srcRect.w * static_cast<int>((SDL_GetTicks() / speed) % frames));
 		}
 
-
 		destRect.x = static_cast<int>(transform->position.x);
 		destRect.y = static_cast<int>(transform->position.y);
 		destRect.w = transform->width * transform->scale;

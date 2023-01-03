@@ -24,7 +24,8 @@ public:
 
 	static SDL_Renderer* renderer;
 	static SDL_Event event;
-	static bool shoot;
+	static bool p1shoot;
+	static bool p2shoot;
 	static bool isRunning;
 	static AssetManager* assets;
 	enum groupLabels : std::size_t
@@ -37,10 +38,15 @@ public:
 	};
 
 private:
-	int cnt = 0;
 	SDL_Window* window;
 	Uint32 frameStart;
 	int frameTime;
+	const char* p1path;
+	const char* p1bpath;
+	const char* p2path;
+	const char* p2bpath;
+	int p1hp = 100;
+	int p2hp = 100;
 };
 
 

@@ -4,7 +4,7 @@
 #include "Components.h"
 
 
-class KeyboardController :public Component
+class KeyboardController1 :public Component
 {
 public:
 	TransformComponent* transform;
@@ -24,7 +24,9 @@ public:
 			switch (Game::event.key.keysym.sym)
 			{
 			case SDLK_w:
+				transform->jump = true;
 				transform->velocity.y = -1;
+
 				break;
 			case SDLK_a:
 				transform->velocity.x = -1;
@@ -38,7 +40,7 @@ public:
 				sprite->Play("Right");
 				break;
 			case SDLK_c:
-				Game::shoot = true;
+				Game::p1shoot = true;
 				break;
 			default:
 				break;
@@ -50,13 +52,14 @@ public:
 			switch (Game::event.key.keysym.sym)
 			{
 			case SDLK_w:
-				transform->velocity.y = 0;
+				transform->jump = false;
+				transform->velocity.y = 2;
 				break;
 			case SDLK_a:
 				transform->velocity.x = 0;
 				break;
 			case SDLK_s:
-				transform->velocity.y = 0;
+				transform->velocity.y = 5;
 				break;
 			case SDLK_d:
 				transform->velocity.x = 0;

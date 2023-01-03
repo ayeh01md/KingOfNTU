@@ -9,13 +9,13 @@ public:
 	}
 	void drawScene( int p1hp) {
 
-		srcRect.h = 41;
-		srcRect.w = 454;
+		srcRect.h = 43;
+		srcRect.w = 455;
 		srcRect.x = 0;
 		srcRect.y = 0;
 
 		destRect.x = 73;
-		destRect.y = 65;
+		destRect.y = 64;
 		destRect.w = srcRect.w;//Size of character?
 		destRect.h = srcRect.h;
 		objTexture = TextureManager::LoadTexture("img/redblood.png");

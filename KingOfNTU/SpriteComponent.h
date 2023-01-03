@@ -35,7 +35,7 @@ public:
 
 	SpriteComponent(std::string id, bool isAnimated)
 	{
-		animated = true;
+		animated = false;
 		animated = isAnimated;
 
 		Animation right = Animation(0, 4, 60);

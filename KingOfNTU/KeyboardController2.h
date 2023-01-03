@@ -30,6 +30,7 @@ public:
 				transform->velocity.x = -5;
 				sprite->isright = false;
 				sprite->animated = true;
+				sprite->Play("Left");
 				break;
 			case SDLK_DOWN:
 				transform->velocity.y = 10;
@@ -39,6 +40,7 @@ public:
 				transform->velocity.x = 5;
 				sprite->isright = true;
 				sprite->animated = true;
+				sprite->Play("Right");
 				break;
 			case SDLK_l:
 				Game::p2shoot = true;

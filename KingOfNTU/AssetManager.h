@@ -15,7 +15,7 @@ public:
 
 	//gameobjects
 
-	void CreateProjectile(Vector2D pos, Vector2D vel, int range, int speed, std::string id);
+	void CreateProjectile(Vector2D pos, Vector2D vel, int range, int speed, std::string id ,int h , int w);
 
 	//texture management
 	void AddTexture(std::string id, const char* path);

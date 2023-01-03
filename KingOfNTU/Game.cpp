@@ -67,14 +67,14 @@ void Game::init(const char* title, int width, int height, bool fullscreen)
 	p2blood = new blood2(p2hp);
 
 	newPlayer.addComponent<TransformComponent>(100 , 0);
-	newPlayer.addComponent<SpriteComponent>("player1" , true);
+	newPlayer.addComponent<SpriteComponent>("player1" , false);
 	newPlayer.addComponent<KeyboardController1>();
-	newPlayer.addComponent<ColliderComponent>("player");
+	newPlayer.addComponent<ColliderComponent>("player1");
 	newPlayer.addGroup(groupPlayers);
 
 
 	newPlayer2.addComponent<TransformComponent>(1000 , 0);
-	newPlayer2.addComponent<SpriteComponent>("player2" , true);
+	newPlayer2.addComponent<SpriteComponent>("player2" , false);
 	newPlayer2.addComponent<KeyboardController2>();
 	newPlayer2.addComponent<ColliderComponent>("player2");
 	newPlayer2.addGroup(groupPlayers);
@@ -118,6 +118,9 @@ void Game::update()
 	SDL_Rect playerCol = newPlayer.getComponent<ColliderComponent>().collider;
 	//Add more according to what objects need to be updated
 
+	Vector2D playerPos2 = newPlayer2.getComponent<TransformComponent>().position;
+	SDL_Rect playerCol2 = newPlayer2.getComponent<ColliderComponent>().collider;
+
 	std::stringstream ss;
 	ss << "Player position: " << frameStart;
 	label.getComponent<UILabel>().SetLabelText(ss.str(), "arial");
@@ -134,14 +137,29 @@ void Game::update()
 	if (p1shoot == true)
 	{
 		std::cout << "Object created";
-		assets->AddTexture("projectile", "img/b_yeh.png");
+		assets->AddTexture("projectile", p1bpath);
 		manager.PrintEntity();
-		assets->CreateProjectile(Vector2D(playerPos.x + 160, playerPos.y + 115), Vector2D(2, 0), 200, 1, "projectile");
+	if(newPlayer.getComponent<SpriteComponent>().isright)assets->CreateProjectile(Vector2D(playerPos.x + 200, playerPos.y + 115), Vector2D(10, 0), 50, 1, "projectile" , h1 ,w1);
+	else assets->CreateProjectile(Vector2D(playerPos.x - 150, playerPos.y + 115), Vector2D(-10, 0), 50, 1, "projectile" , h1 , w1);
 		/*
 		assets->AddTexture("projectile", "img/b_yeh.png");
 		assets->CreateProjectile(Vector2D(200, 500), Vector2D(2, 0), 200, 1, "projectile");
 		*/
 		p1shoot = false;
+	}
+
+	if (p2shoot == true)
+	{
+		std::cout << "Object created";
+		assets->AddTexture("projectile2", p2bpath);
+		manager.PrintEntity();
+		if (newPlayer2.getComponent<SpriteComponent>().isright)assets->CreateProjectile(Vector2D(playerPos2.x + 200, playerPos2.y + 115), Vector2D(10, 0), 50, 1, "projectile2" , h2 , w2);
+		else assets->CreateProjectile(Vector2D(playerPos2.x - 150, playerPos2.y + 115), Vector2D(-10, 0), 50, 1, "projectile2" , h2, w2);
+		/*
+		assets->AddTexture("projectile", "img/b_yeh.png");
+		assets->CreateProjectile(Vector2D(200, 500), Vector2D(2, 0), 200, 1, "projectile");
+		*/
+		p2shoot = false;
 	}
 
 

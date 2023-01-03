@@ -139,8 +139,12 @@
     <ClCompile Include="ECS.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="GetID.cpp" />
+    <ClCompile Include="LTexture.cpp" />
+    <ClCompile Include="LWindow.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
+    <ClCompile Include="LButton.cpp" />
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="Vector2D.cpp" />
   </ItemGroup>
@@ -157,8 +161,12 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameScene.h" />
+    <ClInclude Include="GetID.h" />
+    <ClInclude Include="LButton.h" />
     <ClInclude Include="KeyboardController2.h" />
     <ClInclude Include="KeyboardController1.h" />
+    <ClInclude Include="LTexture.h" />
+    <ClInclude Include="LWindow.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="ProjectileComponent.h" />
     <ClInclude Include="SpriteComponent.h" />

@@ -10,6 +10,7 @@ public:
 	TransformComponent* transform;
 	SpriteComponent* sprite;
 
+
 	void init() override
 	{
 		transform = &entity->getComponent<TransformComponent>();
@@ -35,6 +36,9 @@ public:
 			case SDLK_d:
 				transform->velocity.x = 1;
 				sprite->Play("Right");
+				break;
+			case SDLK_c:
+				Game::shoot = true;
 				break;
 			default:
 				break;

@@ -24,7 +24,7 @@ public:
 
 	static SDL_Renderer* renderer;
 	static SDL_Event event;
-	
+	static bool shoot;
 	static bool isRunning;
 	static AssetManager* assets;
 	enum groupLabels : std::size_t

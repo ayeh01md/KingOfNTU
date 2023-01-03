@@ -26,6 +26,7 @@ public:
 		{
 			std::cout << "Out of Range" << std::endl;
 			entity->destroy();
+			std::cout << "Entity Destoyed" << std::endl;
 		}
 		/*
 		else if (transform->position.x > Game::camera.x + Game::camera.w ||

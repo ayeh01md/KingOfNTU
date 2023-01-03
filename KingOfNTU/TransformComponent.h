@@ -10,6 +10,8 @@ private:
 public:
 
 	Vector2D position;
+	
+
 	Vector2D velocity;
 
 	int height = 235;
@@ -20,14 +22,15 @@ public:
 
 	TransformComponent()
 	{
-		//Use to set the position of the characters
+		//Use to set the position of the character
 		position.Zero();
 	}
 
 
 	TransformComponent(float x, float y)
 	{
-		position.Zero();
+		position.x = x;
+		position.y = y;
 	}
 	//Constructor with with size
 	TransformComponent(float x, float y, int h, int w, int sc)

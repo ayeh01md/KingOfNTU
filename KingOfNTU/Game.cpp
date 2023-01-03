@@ -9,12 +9,13 @@
 
 Map* map;
 Manager manager;
-
+KeyboardController input;
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
 
 AssetManager* Game::assets = new AssetManager(&manager);
 bool Game::isRunning = false;
+bool Game::shoot = false;
 
 auto& newPlayer(manager.addEntity());
 auto& wall(manager.addEntity());
@@ -48,6 +49,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)
 			SDL_SetRenderDrawColor(renderer,255,255,255,255);
 		}
 		isRunning = true;
+		shoot = false;
 	}
 	/*
 	SDL_Surface* tmpSurface = IMG_Load("img/yeh.png");
@@ -61,8 +63,8 @@ void Game::init(const char* title, int width, int height, bool fullscreen)
 	//assets->AddTexture("terrain", "assets/terrain_ss.png");
 	assets->AddTexture("player", "img/yeh.png");
 	assets->AddTexture("wall", "img/square.png");
-	assets->AddTexture("projectile", "img/b_yeh.png");
-	newPlayer.addComponent<TransformComponent>();
+	
+	newPlayer.addComponent<TransformComponent>(10.0f,385.0f);
 	newPlayer.addComponent<SpriteComponent>("player", true);
 	newPlayer.addComponent<KeyboardController>();
 	newPlayer.addComponent<ColliderComponent>("player");
@@ -97,9 +99,11 @@ void Game::handleEvents()
 		break;
 	}
 }
-
+bool shoot_once = true;
 void Game::update()
 {
+	manager.refresh();
+	manager.update();
 	cnt++;
 	Vector2D playerPos = newPlayer.getComponent<TransformComponent>().position;
 	SDL_Rect playerCol = newPlayer.getComponent<ColliderComponent>().collider;
@@ -107,8 +111,22 @@ void Game::update()
 	
 	manager.refresh();
 	manager.update();
+	
+	//std::cout << shoot;
+	if (shoot == true)
+	{
+		std::cout << "Object created";
+		assets->AddTexture("projectile", "img/b_yeh.png");
+		assets->CreateProjectile(Vector2D(playerPos.x+160,playerPos.y+115), Vector2D(2, 0), 200, 1, "projectile");
+		shoot = false;
+		/*
+		assets->AddTexture("projectile", "img/b_yeh.png");
+		assets->CreateProjectile(Vector2D(200, 500), Vector2D(2, 0), 200, 1, "projectile");
+		*/
+	}
 
 	//assets->CreateProjectile(Vector2D(600, 600), Vector2D(2, 0), 200, 2, "projectile");
+	/*
 	for (auto& c : colliders)
 	{
 		SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
@@ -118,12 +136,16 @@ void Game::update()
 			newPlayer.getComponent<TransformComponent>().position = playerPos;
 		}
 	}
+	*/
+	//std::cout <<"Player" << newPlayer.getComponent<ColliderComponent>().collider.x << ", " << newPlayer.getComponent<ColliderComponent>().collider.y << std::endl;
 	for (auto& p : projectiles)
 	{
+		//std::cout <<"Projectile: "<< p->getComponent<ColliderComponent>().collider.x << ", " << p->getComponent<ColliderComponent>().collider.y << std::endl;
 		if (Collision::CollisionDetect(newPlayer.getComponent<ColliderComponent>().collider, p->getComponent<ColliderComponent>().collider))
 		{
 			std::cout << "Hit player!" << std::endl;
 			p->destroy();
+
 		}
 	}
 	/*
@@ -175,9 +197,9 @@ void Game::render()
 	{
 		p->draw();
 	}
-	for (auto& p : projectiles)
+	for (auto& pr : projectiles)
 	{
-		p->draw();
+		pr->draw();
 	}
 
 	SDL_RenderPresent(renderer);

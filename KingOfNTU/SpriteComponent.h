@@ -49,7 +49,7 @@ public:
 
 	~SpriteComponent()
 	{
-		SDL_DestroyTexture(texture);
+
 	}
 
 	void setTex(std::string id)

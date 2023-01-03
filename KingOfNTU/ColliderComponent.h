@@ -19,7 +19,10 @@ public:
 	{
 		tag = t;
 	}
+	~ColliderComponent()
+	{
 
+	}
 	ColliderComponent(std::string t, int xpos, int ypos, int size)
 	{
 		tag = t;

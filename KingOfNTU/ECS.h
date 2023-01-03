@@ -65,7 +65,6 @@ public:
 	void update()
 	{
 		for (auto& c : components) c->update();
-
 	}
 
 	void draw()
@@ -73,7 +72,9 @@ public:
 		for (auto& c : components) c->draw();
 	}
 	bool isActive() { return active; }
-	void destroy() { active = false; }
+	void destroy() {
+		active = false; 
+	}
 
 	bool hasGroup(Group mGroup)
 	{
@@ -171,6 +172,19 @@ public:
 		std::unique_ptr<Entity> uPtr{ e };
 		entities.emplace_back(std::move(uPtr));
 		return *e;
+	}
+
+	void PrintEntity()
+	{
+		int count = 0;
+		std::cout << "Num: " << entities.size() << std::endl;
+		for (auto& entity: entities)
+		{
+
+		}
+		
+		
+		std::cout << count<<std::endl;
 	}
 
 };

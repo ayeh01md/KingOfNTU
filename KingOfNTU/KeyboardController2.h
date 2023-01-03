@@ -9,12 +9,10 @@ class KeyboardController2 :public Component
 public:
 	TransformComponent* transform;
 	SpriteComponent* sprite;
-	BulletSpriteComponent* bullet;
 	void init() override
 	{
 		transform = &entity->getComponent<TransformComponent>();
 		sprite = &entity->getComponent<SpriteComponent>();
-		bullet = &entity->getComponent<BulletSpriteComponent>();
 	}
 
 	void update() override
@@ -34,7 +32,7 @@ public:
 				sprite->animated = true;
 				break;
 			case SDLK_DOWN:
-				transform->velocity.y = 5;
+				transform->velocity.y = 10;
 				sprite->animated = true;
 				break;
 			case SDLK_RIGHT:
@@ -43,10 +41,12 @@ public:
 				sprite->animated = true;
 				break;
 			case SDLK_l:
-				if (!bullet->isfly)bullet->fire = true;
-				bullet->get = false;
+				Game::p2shoot = true;
 				break;
-			
+			case SDLK_k:
+				if (sprite->isright)transform->position.x += 300;
+				else transform->position.x -= 300;
+				break;
 			default:
 				break;
 			}

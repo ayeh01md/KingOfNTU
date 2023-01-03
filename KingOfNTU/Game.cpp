@@ -6,6 +6,7 @@
 #include "Collision.h"
 #include "blood.h"
 #include "blood2.h"
+#include <sstream>
 Manager manager;
 
 GameScene* scene;
@@ -13,9 +14,14 @@ blood* p1blood;
 blood2* p2blood;
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
+AssetManager* Game::assets = new AssetManager(&manager);
 
+bool Game::p1shoot = false;
+bool Game::p2shoot = false;
 auto& newPlayer(manager.addEntity());
 auto& newPlayer2(manager.addEntity());
+auto& label(manager.addEntity());
+
 
 
 
@@ -48,22 +54,42 @@ void Game::init(const char* title, int width, int height, bool fullscreen)
 	*/
 
 	//Add more according to what objects are added
+
+
+	assets->AddTexture("player1", p1path);
+	assets->AddTexture("player2", p2path);
+	assets->AddFont("arial", "font/calculator.ttf", 50);
+
+
+
 	scene = new GameScene(3);
 	p1blood = new blood(p1hp);
 	p2blood = new blood2(p2hp);
 
 	newPlayer.addComponent<TransformComponent>(100 , 0);
-	newPlayer.addComponent<SpriteComponent>(p1path);
-	newPlayer.addComponent<BulletSpriteComponent>(p1bpath);
+	newPlayer.addComponent<SpriteComponent>("player1" , true);
 	newPlayer.addComponent<KeyboardController1>();
 	newPlayer.addComponent<ColliderComponent>("player");
+	newPlayer.addGroup(groupPlayers);
+
 
 	newPlayer2.addComponent<TransformComponent>(1000 , 0);
-	newPlayer2.addComponent<SpriteComponent>(p2path);
-	newPlayer2.addComponent<BulletSpriteComponent>(p2bpath);
+	newPlayer2.addComponent<SpriteComponent>("player2" , true);
 	newPlayer2.addComponent<KeyboardController2>();
 	newPlayer2.addComponent<ColliderComponent>("player2");
+	newPlayer2.addGroup(groupPlayers);
+
+
+
+	SDL_Color black = { 0, 0, 0,0 };
+
+	label.addComponent<UILabel>(800, 10, "Test String", "arial", black);	
 }
+
+
+auto& players(manager.getGroup(Game::groupPlayers));
+auto& colliders(manager.getGroup(Game::groupColliders));
+auto& projectiles(manager.getGroup(Game::groupProjectiles));
 
 
 void Game::handleEvents()
@@ -84,44 +110,62 @@ void Game::handleEvents()
 
 void Game::update()
 {
-	cnt++;
+	frameStart = 60 - (SDL_GetTicks() / 1000);
+	std::cout << frameStart << std::endl;
 
+
+	Vector2D playerPos = newPlayer.getComponent<TransformComponent>().position;
+	SDL_Rect playerCol = newPlayer.getComponent<ColliderComponent>().collider;
 	//Add more according to what objects need to be updated
+
+	std::stringstream ss;
+	ss << "Player position: " << frameStart;
+	label.getComponent<UILabel>().SetLabelText(ss.str(), "arial");
+
+	if (frameStart == 0)
+	{
+		isRunning = false;
+	}
 
 	manager.refresh();
 	manager.update();
-	
+
+	//std::cout << shoot;
+	if (p1shoot == true)
+	{
+		std::cout << "Object created";
+		assets->AddTexture("projectile", "img/b_yeh.png");
+		manager.PrintEntity();
+		assets->CreateProjectile(Vector2D(playerPos.x + 160, playerPos.y + 115), Vector2D(2, 0), 200, 1, "projectile");
+		/*
+		assets->AddTexture("projectile", "img/b_yeh.png");
+		assets->CreateProjectile(Vector2D(200, 500), Vector2D(2, 0), 200, 1, "projectile");
+		*/
+		p1shoot = false;
+	}
 
 
-	if (newPlayer.getComponent<BulletSpriteComponent>().fire) {
-		std::cout << "fire" << std::endl;
-		if (Collision::CollisionDetect(newPlayer2.getComponent<ColliderComponent>().collider, newPlayer.getComponent<BulletSpriteComponent>().destRect))
+	int count = 0;
+	for (auto& p : projectiles)
+	{
+		count++;
+		//std::cout <<"Projectile: "<< p->getComponent<ColliderComponent>().collider.x << ", " << p->getComponent<ColliderComponent>().collider.y << std::endl;
+		if (Collision::CollisionDetect(newPlayer.getComponent<ColliderComponent>().collider, p->getComponent<ColliderComponent>().collider))
+		{
+			std::cout << "Hit player1!" << std::endl;
+			p->destroy();
+			p1hp -= 10;
+
+		}
+		if (Collision::CollisionDetect(newPlayer2.getComponent<ColliderComponent>().collider, p->getComponent<ColliderComponent>().collider))
 		{
 			std::cout << "Hit player2!" << std::endl;
-			p2hp--;
-			std::cout << p2hp << std::endl;
+			p->destroy();
+			p2hp -= 10;
+
 		}
-			
 	}
 
-	if (newPlayer2.getComponent<BulletSpriteComponent>().fire) {
-		std::cout << "fire" << std::endl;
-		if (Collision::CollisionDetect(newPlayer.getComponent<ColliderComponent>().collider, newPlayer2.getComponent<BulletSpriteComponent>().destRect))
-		{
-			
-			std::cout << "Hit player1!" << std::endl;
-			p1hp--;
-			std::cout << p1hp << std::endl;
-		}
-
-	}
-	
-
-
-
-
-	//std::cout <<"p1 : " << newPlayer.getComponent<TransformComponent>().position.x << "," << newPlayer.getComponent<TransformComponent>().position.y << std::endl;
-	//std::cout <<"p2 : " << newPlayer2.getComponent<TransformComponent>().position.x << "," << newPlayer2.getComponent<TransformComponent>().position.y << std::endl;
 
 }
 
@@ -143,8 +187,21 @@ void Game::render()
 	scene->Render();
 	p1blood->Render(p1hp);
 	p2blood->Render(p2hp);
+
+
+	for (auto& p : players)
+	{
+		p->draw();
+	}
+	for (auto& pr : projectiles)
+	{
+		std::cout << "asd" << std::endl;
+		pr->draw();
+	}
+
+
+	label.draw();
 	manager.draw();
-	
 	SDL_RenderPresent(renderer);
 }
 void Game::clean()

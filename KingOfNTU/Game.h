@@ -3,6 +3,10 @@
 #include"SDL.h"
 #include "SDL_image.h"
 #include <iostream>
+#include <vector>
+
+class AssetManager;
+class ColliderComponent;
 
 class Game
 {
@@ -72,6 +76,17 @@ public:
 	static SDL_Renderer* renderer;
 	static SDL_Event event;
 
+	static AssetManager* assets;
+	enum groupLabels : std::size_t
+	{
+		groupPlayers,
+		groupColliders,
+		groupProjectiles
+	};
+
+	static bool p1shoot;
+	static bool p2shoot;
+
 private:
 	bool isRunning = false;
 	int cnt = 0;
@@ -80,6 +95,8 @@ private:
 	const char* p1bpath;
 	const char* p2path;
 	const char* p2bpath;
+	Uint32 frameStart;
+	int frameTime;	
 	int p1hp = 100;
 	int p2hp = 100;
 

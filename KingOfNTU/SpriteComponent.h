@@ -1,8 +1,10 @@
 #pragma once
-#include "Components.h"
+
 #include "SDL.h"
-#include "TextureManager.h" 
-//#include "GameObject.h"
+#include "TextureManager.h"
+#include "Animation.h"
+#include <map>
+#include "AssetManager.h"
 
 class SpriteComponent : public Component
 {
@@ -15,19 +17,45 @@ private:
 	int frames = 0;
 	int speed = 100;
 
+
+
 public:
+	bool animated = false;
+	int animIndex = 0;
+	std::map<const char*, Animation> animations;
+
+
+
+
 	SpriteComponent() = default;
-	SpriteComponent(const char* path)
+	SpriteComponent(std::string id)
 	{
-		setTex(path);
+		setTex(id);
 	}
 
-	void setTex(const char* path)
+	SpriteComponent(std::string id, bool isAnimated)
 	{
-		animated = false;
-		frames = 4;
-		speed = 100;
-		texture = TextureManager::LoadTexture(path);
+		animated = true;
+		animated = isAnimated;
+
+		Animation right = Animation(0, 4, 60);
+		Animation left = Animation(5, 4, 60);
+
+		animations.emplace("Right", right);
+		animations.emplace("Left", left);
+
+		Play("Right");
+		setTex(id);
+	}
+
+	~SpriteComponent()
+	{
+
+	}
+
+	void setTex(std::string id)
+	{
+		texture = Game::assets->GetTexture(id);
 	}
 
 	void init() override
@@ -37,32 +65,38 @@ public:
 		srcRect.x = 0;
 		srcRect.y = 0;
 
-		srcRect.w = 160;
-		srcRect.h = 235;
 
-		destRect.w = 160;
-		destRect.h = 235;
+
+		srcRect.w = transform->width;
+		srcRect.h = transform->height;
+
 	}
 
 	void update() override
 	{
-		if (animated) {
-			if(isright)srcRect.x = srcRect.w * static_cast<int>((SDL_GetTicks() / speed) % frames);
-			else srcRect.x = srcRect.w * (static_cast<int>((SDL_GetTicks() / speed) % frames  +5));
-		}
-		else {
-			if (isright) srcRect.x = srcRect.w;
-			else srcRect.x = srcRect.w * 5;
+		if (animated)
+		{
+			srcRect.x = (animIndex * transform->width) + (srcRect.w * static_cast<int>((SDL_GetTicks() / speed) % frames));
 		}
 
-		destRect.x = (int)transform->position.x;
-		destRect.y = (int)transform->position.y;
+
+
+		destRect.x = static_cast<int>(transform->position.x);
+		destRect.y = static_cast<int>(transform->position.y);
+		destRect.w = transform->width * transform->scale;
+		destRect.h = transform->height * transform->scale;
 	}
 
 	void draw() override
 	{
 		TextureManager::Draw(texture, srcRect, destRect);
 	}
-	bool animated = false;
+
+	void Play(const char* animName)
+	{
+		frames = animations[animName].frames;
+		animIndex = animations[animName].index;
+		speed = animations[animName].speed;
+	}
 	bool isright = true;
 };

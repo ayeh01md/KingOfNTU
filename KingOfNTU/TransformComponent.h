@@ -51,6 +51,9 @@ public:
 		else if (position.x > 1100) {
 			position.x = 1099;
 		}
+		else if (position.y < -100) {
+			position.y = -109;
+		}
 		else position.x += velocity.x * speed;
 
 		if (position.y > 450) {

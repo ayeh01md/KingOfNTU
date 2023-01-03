@@ -134,6 +134,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AssetManager.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="ECS.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -144,6 +145,8 @@
     <ClCompile Include="Vector2D.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Animation.h" />
+    <ClInclude Include="AssetManager.h" />
     <ClInclude Include="blood.h" />
     <ClInclude Include="blood2.h" />
     <ClInclude Include="BulletSpriteCompoent.h" />
@@ -157,9 +160,11 @@
     <ClInclude Include="KeyboardController2.h" />
     <ClInclude Include="KeyboardController1.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="ProjectileComponent.h" />
     <ClInclude Include="SpriteComponent.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="TransformComponent.h" />
+    <ClInclude Include="UILabel.h" />
     <ClInclude Include="Vector2D.h" />
   </ItemGroup>
   <ItemGroup>

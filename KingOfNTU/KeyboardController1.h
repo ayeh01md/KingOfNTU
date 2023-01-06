@@ -48,6 +48,9 @@ public:
 				if(sprite->isright)transform->position.x += 300;
 			else transform->position.x -= 300;
 				break;
+			case SDLK_ESCAPE:
+				Game::isRunning = false;
+				break;
 			default:
 				break;
 			}
@@ -78,7 +81,19 @@ public:
 				break;
 			}
 		}
+
+
+		if (transform-> position.x < -100) {
+			transform->position.x = -99;
+		}
+		else if (transform->position.x > 1200) {
+			transform->position.x = 1199;
+		}
+
+
 	}
+
+
 
 
 

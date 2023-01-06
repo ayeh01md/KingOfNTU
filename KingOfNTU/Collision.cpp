@@ -1,6 +1,7 @@
 #include "Collision.h"
 #include "ColliderComponent.h"
 
+//Detects whether two entities collide with each other
 bool Collision::CollisionDetect(const SDL_Rect& recA, const SDL_Rect& recB)
 {
 	if (recA.x + recA.w >= recB.x &&

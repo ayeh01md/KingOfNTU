@@ -80,7 +80,20 @@ public:
 				break;
 			}
 		}
+
+
+
+		if (transform->position.x < -100) {
+			transform->position.x = -99;
+		}
+		else if (transform->position.x > 1200) {
+			transform->position.x = 1199;
+		}
+
+
 	}
+
+
 
 
 

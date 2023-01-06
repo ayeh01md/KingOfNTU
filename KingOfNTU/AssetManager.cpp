@@ -7,9 +7,9 @@ AssetManager::AssetManager(Manager* man) : manager(man)
 AssetManager::~AssetManager()
 {}
 
+//Create Projectile, add necessary componnents, and add to projectile group
 void AssetManager::CreateProjectile(Vector2D pos, Vector2D vel, int range, int speed, std::string id, int h , int w)
 {
-
 	auto& projectile(manager->addEntity());
 	projectile.addComponent<TransformComponent>(pos.x, pos.y, h, w, 1);
 	projectile.addComponent<SpriteComponent>(id, false);
@@ -28,6 +28,7 @@ SDL_Texture* AssetManager::GetTexture(std::string id)
 	return textures[id];
 }
 
+//Add different fonts
 void AssetManager::AddFont(std::string id, std::string path, int fontSize)
 {
 	fonts.emplace(id, TTF_OpenFont(path.c_str(), fontSize));

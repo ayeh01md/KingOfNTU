@@ -71,8 +71,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Dev\SDL2_ttf-2.20.1\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Dev\SDL2_ttf-2.20.1\lib\x64;C:\Dev\SDL2_image-2.6.2\lib\x64;C:\Dev\SDL2\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Dev\SDL2_mixer-2.6.2\include;C:\Dev\SDL2_ttf-2.20.1\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Dev\SDL2_mixer-2.6.2\lib\x64;C:\Dev\SDL2_ttf-2.20.1\lib\x64;C:\Dev\SDL2_image-2.6.2\lib\x64;C:\Dev\SDL2\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -113,7 +113,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\Dev\SDL2_ttf-2.20.1\lib\x64;C:\Dev\SDL2_image-2.6.2\lib\x64;C:\Dev\SDL2\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -139,11 +139,9 @@
     <ClCompile Include="ECS.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject.cpp" />
-    <ClCompile Include="GetID.cpp" />
     <ClCompile Include="LTexture.cpp" />
     <ClCompile Include="LWindow.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Map.cpp" />
     <ClCompile Include="LButton.cpp" />
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="Vector2D.cpp" />
@@ -167,7 +165,6 @@
     <ClInclude Include="KeyboardController1.h" />
     <ClInclude Include="LTexture.h" />
     <ClInclude Include="LWindow.h" />
-    <ClInclude Include="Map.h" />
     <ClInclude Include="ProjectileComponent.h" />
     <ClInclude Include="SpriteComponent.h" />
     <ClInclude Include="TextureManager.h" />

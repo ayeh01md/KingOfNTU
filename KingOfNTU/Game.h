@@ -92,7 +92,8 @@ public:
 			w2 = 30;
 			h2 = 40;
 		}
-
+		//curticks = SDL_GetTicks();
+		//std::cout << "cur ticks = " << curticks << std::endl;
 	}
 	~Game() {};
 
@@ -117,15 +118,17 @@ public:
 
 	static bool p1shoot;
 	static bool p2shoot;
+	static bool isRunning;
 
 private:
-	bool isRunning = false;
+	
 	int cnt = 0;
 	SDL_Window* window;
 	const char* p1path;
 	const char* p1bpath;
 	const char* p2path;
 	const char* p2bpath;
+	Uint32 curticks;
 	Uint32 frameStart;
 	int frameTime;	
 	int p1hp = 100;

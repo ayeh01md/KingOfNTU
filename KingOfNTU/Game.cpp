@@ -8,6 +8,8 @@
 #include "blood2.h"
 #include <sstream>
 #include "SDL_ttf.h"
+#include "SDL_mixer.h"
+
 Manager manager;
 
 GameScene* scene;
@@ -16,9 +18,10 @@ blood2* p2blood;
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
 AssetManager* Game::assets = new AssetManager(&manager);
-
+Mix_Chunk* gShoot = NULL;
 bool Game::p1shoot = false;
 bool Game::p2shoot = false;
+bool Game::isRunning = false;
 auto& newPlayer(manager.addEntity());
 auto& newPlayer2(manager.addEntity());
 auto& label(manager.addEntity());
@@ -29,58 +32,51 @@ auto& label2(manager.addEntity());
 void Game::init(const char* title, int width, int height, bool fullscreen)
 {
 	int flags = 0;
-
+	curticks = SDL_GetTicks();
 	if (fullscreen)
 	{
-		flags = SDL_WINDOW_FULLSCREEN;
+		flags = SDL_WINDOW_MAXIMIZED;
 	}
-
-	/*
-	if (SDL_Init(SDL_INIT_EVERYTHING) == 0)
-	{
-		std::cout << "Subsystem Initialised!" << std::endl;
-		window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, flags);
-		renderer = SDL_CreateRenderer(window, -1, 0);
-
-		if (renderer)
-		{
-			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-		}
-		
-		
-	}*/
+	
 	isRunning = true;
 	if (TTF_Init() == -1)
 	{
 		std::cout << "Error : SDL_TTF" << std::endl;
 	}
-	/*
-	SDL_Surface* tmpSurface = IMG_Load("img/yeh.png");
-	playerTex = SDL_CreateTextureFromSurface(renderer, tmpSurface);
-	SDL_FreeSurface(tmpSurface);
-	*/
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
+	{
+		printf("SDL could not initialize! SDL Error: %s\n", SDL_GetError());
+	}
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
+	{
+		printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
+	}
+	gShoot = Mix_LoadWAV("sound/BADNTU.wav");
+	if (gShoot == NULL)
+	{
+		printf("Failed to load beat music! SDL_mixer Error: %s\n", Mix_GetError());
+	}
+	
 
-	//Add more according to what objects are added
-
-
+	//Texture and Font path initialization
 	assets->AddTexture("player1", p1path);
 	assets->AddTexture("player2", p2path);
 	assets->AddFont("arial", "font/NotoSans-SemiCondensedBlack.ttf", 80);
 	assets->AddFont("arial2", "font/NotoSans-SemiCondensedBlack.ttf", 50);
-	//assets->AddFont("NotoSans", "font/NotoSans-SemiCondensedBlack.ttf", 100);
 
 
 	scene = new GameScene(3);
 	p1blood = new blood(p1hp);
 	p2blood = new blood2(p2hp);
 
+	//Add necessary components for Player 1
 	newPlayer.addComponent<TransformComponent>(100 , 300);
 	newPlayer.addComponent<SpriteComponent>("player1" , false);
 	newPlayer.addComponent<KeyboardController1>();
 	newPlayer.addComponent<ColliderComponent>("player1");
 	newPlayer.addGroup(groupPlayers);
 
-
+	//Add necessary components for Player 2
 	newPlayer2.addComponent<TransformComponent>(1000 , 300);
 	newPlayer2.addComponent<SpriteComponent>("player2" , false);
 	newPlayer2.addComponent<KeyboardController2>();
@@ -88,14 +84,12 @@ void Game::init(const char* title, int width, int height, bool fullscreen)
 	newPlayer2.addGroup(groupPlayers);
 
 
-
+	//Setup for label
 	SDL_Color black = { 0, 0, 0,0 };
-
 	label.addComponent<UILabel>(595, 50, "Test String", "arial", black);
-	//label2.addComponent<UILabel>(595, 50, "Player 2 WIN!!", "arial", black);
 }
 
-
+//Create Entity Groups 
 auto& players(manager.getGroup(Game::groupPlayers));
 auto& colliders(manager.getGroup(Game::groupColliders));
 auto& projectiles(manager.getGroup(Game::groupProjectiles));
@@ -119,17 +113,19 @@ void Game::handleEvents()
 
 void Game::update()
 {
-	frameStart = 60 - (SDL_GetTicks() / 1000);
+		
+	frameStart = 60 - ((SDL_GetTicks() -curticks) / 1000);
 	std::cout << frameStart << std::endl;
 
-
+	//Player1 collision size and position
 	Vector2D playerPos = newPlayer.getComponent<TransformComponent>().position;
 	SDL_Rect playerCol = newPlayer.getComponent<ColliderComponent>().collider;
-	//Add more according to what objects need to be updated
 
+	//Player2 collision size and position 
 	Vector2D playerPos2 = newPlayer2.getComponent<TransformComponent>().position;
 	SDL_Rect playerCol2 = newPlayer2.getComponent<ColliderComponent>().collider;
 
+	//Output time
 	std::stringstream ss;
 	ss << frameStart;
 	label.getComponent<UILabel>().SetLabelText(ss.str(), "arial");
@@ -138,41 +134,33 @@ void Game::update()
 	manager.refresh();
 	manager.update();
 
-	//std::cout << shoot;
+	//Creation of projectiles from player1
 	if (p1shoot == true)
 	{
+		Mix_PlayChannel(-1, gShoot, 0);
 		std::cout << "Object created";
 		assets->AddTexture("projectile", p1bpath);
 		manager.PrintEntity();
 	if(newPlayer.getComponent<SpriteComponent>().isright)assets->CreateProjectile(Vector2D(playerPos.x + 200, playerPos.y + 115), Vector2D(10, 0), 50, 1, "projectile" , h1 ,w1);
 	else assets->CreateProjectile(Vector2D(playerPos.x - 150, playerPos.y + 115), Vector2D(-10, 0), 50, 1, "projectile" , h1 , w1);
-		/*
-		assets->AddTexture("projectile", "img/b_yeh.png");
-		assets->CreateProjectile(Vector2D(200, 500), Vector2D(2, 0), 200, 1, "projectile");
-		*/
 		p1shoot = false;
 	}
 
+	//Creation of projectiles from player2
 	if (p2shoot == true)
 	{
+		Mix_PlayChannel(-1, gShoot, 0);
 		std::cout << "Object created";
 		assets->AddTexture("projectile2", p2bpath);
 		manager.PrintEntity();
 		if (newPlayer2.getComponent<SpriteComponent>().isright)assets->CreateProjectile(Vector2D(playerPos2.x + 200, playerPos2.y + 115), Vector2D(10, 0), 50, 1, "projectile2" , h2 , w2);
 		else assets->CreateProjectile(Vector2D(playerPos2.x - 150, playerPos2.y + 115), Vector2D(-10, 0), 50, 1, "projectile2" , h2, w2);
-		/*
-		assets->AddTexture("projectile", "img/b_yeh.png");
-		assets->CreateProjectile(Vector2D(200, 500), Vector2D(2, 0), 200, 1, "projectile");
-		*/
 		p2shoot = false;
 	}
 
 
-	int count = 0;
 	for (auto& p : projectiles)
 	{
-		count++;
-		//std::cout <<"Projectile: "<< p->getComponent<ColliderComponent>().collider.x << ", " << p->getComponent<ColliderComponent>().collider.y << std::endl;
 		if (Collision::CollisionDetect(newPlayer.getComponent<ColliderComponent>().collider, p->getComponent<ColliderComponent>().collider))
 		{
 			std::cout << "Hit player1!" << std::endl;
@@ -189,6 +177,10 @@ void Game::update()
 		}
 	}
 
+	if (p1hp <= 0 || p2hp <= 0 || frameStart <= 0) {
+		scene->drawScene(4);
+	}
+
 
 }
 
@@ -196,15 +188,14 @@ void Game::render()
 {
 
 	SDL_RenderClear(renderer);
-	//SDL_RenderCopy(renderer, playerTex, NULL, &destR);
-	// 
-	//Add more according to what objects need to be rendered
+	//check if the game end
 	if (p1hp <= 0 || p2hp <= 0 || frameStart <=0)   {
-		scene->drawScene(4);
+		//set scene
 		scene->Render();
 		p1blood->Render(0);
 		p2blood->Render(0);
 		
+		//print which player win
 		SDL_Color black = { 0, 0, 0,0 };
 		if(p1hp <= 0 )label2.addComponent<UILabel>(450, 450, "Player 2 WIN!!", "arial2", black);
 		else if (p2hp <= 0)label2.addComponent<UILabel>(450, 450, "Player 1 WIN!!", "arial2", black);
@@ -212,15 +203,18 @@ void Game::render()
 		else if(p1hp > p2hp)label2.addComponent<UILabel>(450, 450, "Player 1 WIN!!", "arial2", black);
 		else label2.addComponent<UILabel>(450, 450, "Player  TIE!!", "arial2", black);
 		label2.draw();
+		Mix_HaltMusic();
 		SDL_RenderPresent(renderer);
 		return;
 	}
+
+
 	scene->Render();
 	p1blood->Render(p1hp);
 	p2blood->Render(p2hp);
 
 	manager.draw();
-
+	
 	for (auto& p : players)
 	{
 		p->draw();
@@ -235,7 +229,6 @@ void Game::render()
 	label.draw();
 	
 	SDL_RenderPresent(renderer);
-	//label.draw();
 }
 void Game::clean()
 {
@@ -243,6 +236,7 @@ void Game::clean()
 	SDL_DestroyRenderer(renderer);
 	TTF_Quit();
 	IMG_Quit();
+	Mix_Quit();
 	SDL_Quit();
 	std::cout << "Game Cleaned" << std::endl;
 

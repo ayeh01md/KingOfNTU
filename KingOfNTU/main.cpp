@@ -28,9 +28,9 @@ LTexture gSceneTexture;
 LTexture StartTexture;
 LTexture RuleTexture;
 LTexture BackTexture;
-LButton Rule(402, 151);
-LButton Start(402, 151);
-LButton Back(198, 113);
+LButton Rule(242, 92);
+LButton Start(242, 92);
+LButton Back(197, 57);
 //Rendered texture
 LTexture gTextTexture1;
 LTexture gTextTexture2;
@@ -119,12 +119,12 @@ void putMedia(scenario s)
         BackTexture.free();
         gSceneTexture.loadTexture("img/welcomepage.png");
         if (!starton) StartTexture.loadFromFile("img/startbtn.png");
-        else StartTexture.loadTexture2("img/startbtn.png", 401, 151); //loadTexture2 is for btn, 1 is for window
+        else StartTexture.loadTexture2("img/startbtn.png", 242, 92); //loadTexture2 is for btn, 1 is for window
         if (!ruleon) RuleTexture.loadFromFile("img/rulebtn.png");
-        else RuleTexture.loadTexture2("img/rulebtn.png", 401, 151);
+        else RuleTexture.loadTexture2("img/rulebtn.png", 242, 92);
         gSceneTexture.render((gWindow.getWidth() - gSceneTexture.getWidth()) / 2, (gWindow.getHeight() - gSceneTexture.getHeight()) / 2);
-        StartTexture.render(gWindow.getWidth() * 10 / 20, gWindow.getHeight() * 3 / 5, NULL, 0, NULL, SDL_FLIP_NONE);
-        RuleTexture.render(gWindow.getWidth() * 5 / 20, gWindow.getHeight() * 3 / 5, NULL, 0, NULL, SDL_FLIP_NONE);
+        StartTexture.render(gWindow.getWidth() * 11 / 20, gWindow.getHeight() * 3 / 5, NULL, 0, NULL, SDL_FLIP_NONE);
+        RuleTexture.render(gWindow.getWidth() * 7 / 20, gWindow.getHeight() * 3 / 5, NULL, 0, NULL, SDL_FLIP_NONE);
         Start.work = 1;
         Rule.work = 1;
         Back.work = 0;
@@ -136,7 +136,7 @@ void putMedia(scenario s)
         RuleTexture.free();
         gSceneTexture.loadTexture("img/rulepage.png");
         if (!backon) BackTexture.loadFromFile("img/backbtn.png");
-        else BackTexture.loadTexture2("img/backbtn.png", 281, 95);
+        else BackTexture.loadTexture2("img/backbtn.png", 197, 57);
         gSceneTexture.render((gWindow.getWidth() - gSceneTexture.getWidth()) / 2, (gWindow.getHeight() - gSceneTexture.getHeight()) / 2);
         BackTexture.render(gWindow.getWidth() * 17 / 40, gWindow.getHeight() * 8 / 10);
         Start.work = 0;
@@ -146,27 +146,18 @@ void putMedia(scenario s)
         Back.work = 1;
         break;
     case choosechar:
-        gSceneTexture.free();
-        StartTexture.free();
-        RuleTexture.free();
-        BackTexture.free();
-        gSceneTexture.loadTexture("img/choosecharpage.png");
-        gSceneTexture.render((gWindow.getWidth() - gSceneTexture.getWidth()) / 2, (gWindow.getHeight() - gSceneTexture.getHeight()) / 2);
-        Start.work = 0;
-        Start.mCurrentSprite = BUTTON_SPRITE_MOUSE_OUT;
-        Rule.work = 0;
-        Rule.mCurrentSprite = BUTTON_SPRITE_MOUSE_OUT;
-        Back.work = 0;
-        Back.mCurrentSprite = BUTTON_SPRITE_MOUSE_OUT;
+        while (p1 == 0 || p2 == 0) {
+            SDL_RenderClear(gRenderer);
+            gSceneTexture.loadTexture("img/choosecharpage.png");
+            gSceneTexture.render((gWindow.getWidth() - gSceneTexture.getWidth()) / 2, (gWindow.getHeight() - gSceneTexture.getHeight()) / 2);
+            SDL_RenderPresent(gRenderer);   
 
-        
             if (p1 != 0)
             {
                 //SDL_Color textColor = { 0, 0, 0 };
-                
                 //if (!gTextTexture1.loadFromRenderedText("Player1: Yeh (create another gTextTexture and render it) ", textColor))
                 //{
-                  // printf("Failed to render text texture!\n");
+                //    printf("Failed to render text texture!\n");
                 //}
                 //gTextTexture1.render((SCREEN_WIDTH - gTextTexture1.getWidth()) / 2, (SCREEN_HEIGHT - gTextTexture1.getHeight()) / 2); //edit this to change location
                 if (p2 == 0)
@@ -177,38 +168,22 @@ void putMedia(scenario s)
             else
             {
                 p1 = getid.getp1();
-                //try
-
-                ////Clear screen
-                //SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
-                //SDL_RenderClear(gRenderer);
-
-                ////Render current frame
-                //gTextTexture1.render((SCREEN_WIDTH - gTextTexture1.getWidth()) / 2, (SCREEN_HEIGHT - gTextTexture1.getHeight()) / 2);
-
-                ////Update screen
-                //SDL_RenderPresent(gRenderer);
-                //try
             }
-
             cout << p1 << "," << p2 << endl;
-
-
-            cout << p1 << "," << p2 << endl;
-            if (p1 != 0 && p2 != 0) {
-                gamemode = 0;
-            }
-
-        
+        }
+        cout << p1 << "," << p2 << endl;
+        if (p1 != 0 && p2 != 0) {
+            gamemode = 0;
+        }
         break;
-    case playing:
+/*    case playing:
         gSceneTexture.free();
         gSceneTexture.loadTexture("img/fightpage.png");
         //gTextTexture.render((gWindow.getWidth() - gTextTexture.getWidth()) / 2, (gWindow.getWidth() - gTextTexture.getHeight()) / 2);
         gSceneTexture.render((gWindow.getWidth() - gSceneTexture.getWidth()) / 2, (gWindow.getHeight() - gSceneTexture.getHeight()) / 2);
         break;
-
-        case gameover:
+*/
+    case gameover:
             break;
     }
 }
@@ -228,7 +203,7 @@ void ingame(SDL_Window* win,SDL_Renderer* ren) {
 
     game = new Game(win, ren, p1, p2);
 
-    game->init("game", 1280, 720, true);
+    game->init("game", 1780, 720, false);
 
     while (game->running())
     {
@@ -263,16 +238,16 @@ void close()
 
     gTextTexture1.free();
     gTextTexture2.free();
-    TTF_CloseFont(gFont);
+    //TTF_CloseFont(gFont);
     gFont = NULL;
     gSceneTexture.free();
     StartTexture.free();
     RuleTexture.free();
     //SDL_DestroyRenderer(gRenderer);
     //gWindow.free();
-    TTF_Quit();
-    IMG_Quit();
-    SDL_Quit();
+    //TTF_Quit();
+    //IMG_Quit();
+    //SDL_Quit();
 }
 
 int main(int argc, char* args[]) {
@@ -387,7 +362,7 @@ int main(int argc, char* args[]) {
                 s = playing;
                 SDL_RenderClear(gRenderer);
                 SDL_RenderPresent(gRenderer);
-                //close();
+                close();
                 ingame(gWindow.getWindow(), gRenderer);
                 break;
             }

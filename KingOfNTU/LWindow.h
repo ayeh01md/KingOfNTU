@@ -18,6 +18,9 @@ public:
 
     int getWidth();
     int getHeight();
+    SDL_Window* getWindow() {
+        return mWindow;
+    }
 
     bool isMinimized();
 

@@ -11,7 +11,10 @@ class ColliderComponent;
 class Game
 {
 public:
-	Game(int p1, int p2){
+	Game(SDL_Window *win, SDL_Renderer *ren,int p1, int p2){
+		window = win; 
+		renderer = ren;
+		//render = ren;
 		if (p1 == 1) {
 			p1path = "img/yeh.png";
 			p1bpath = "img/b_yeh.png";

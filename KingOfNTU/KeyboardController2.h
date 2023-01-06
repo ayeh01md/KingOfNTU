@@ -42,10 +42,10 @@ public:
 				sprite->animated = true;
 				sprite->Play("Right");
 				break;
-			case SDLK_l:
+			case SDLK_k:
 				Game::p2shoot = true;
 				break;
-			case SDLK_k:
+			case SDLK_l:
 				if (sprite->isright)transform->position.x += 300;
 				else transform->position.x -= 300;
 				break;

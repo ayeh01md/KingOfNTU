@@ -7,6 +7,7 @@
 #include "blood.h"
 #include "blood2.h"
 #include <sstream>
+#include "SDL_ttf.h"
 Manager manager;
 
 GameScene* scene;
@@ -21,7 +22,7 @@ bool Game::p2shoot = false;
 auto& newPlayer(manager.addEntity());
 auto& newPlayer2(manager.addEntity());
 auto& label(manager.addEntity());
-
+auto& label2(manager.addEntity());
 
 
 
@@ -46,10 +47,11 @@ void Game::init(const char* title, int width, int height, bool fullscreen)
 			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 		}
 		isRunning = true;
-		if (TTF_Init() == -1)
-		{
-			std::cout << "Error : SDL_TTF" << std::endl;
-		}
+		
+	}
+	if (TTF_Init() == -1)
+	{
+		std::cout << "Error : SDL_TTF" << std::endl;
 	}
 	/*
 	SDL_Surface* tmpSurface = IMG_Load("img/yeh.png");
@@ -62,22 +64,23 @@ void Game::init(const char* title, int width, int height, bool fullscreen)
 
 	assets->AddTexture("player1", p1path);
 	assets->AddTexture("player2", p2path);
-	assets->AddFont("arial", "font/calculator.ttf", 100);
-
+	assets->AddFont("arial", "font/NotoSans-SemiCondensedBlack.ttf", 80);
+	assets->AddFont("arial2", "font/NotoSans-SemiCondensedBlack.ttf", 50);
+	//assets->AddFont("NotoSans", "font/NotoSans-SemiCondensedBlack.ttf", 100);
 
 
 	scene = new GameScene(3);
 	p1blood = new blood(p1hp);
 	p2blood = new blood2(p2hp);
 
-	newPlayer.addComponent<TransformComponent>(100 , 0);
+	newPlayer.addComponent<TransformComponent>(100 , 300);
 	newPlayer.addComponent<SpriteComponent>("player1" , false);
 	newPlayer.addComponent<KeyboardController1>();
 	newPlayer.addComponent<ColliderComponent>("player1");
 	newPlayer.addGroup(groupPlayers);
 
 
-	newPlayer2.addComponent<TransformComponent>(1000 , 0);
+	newPlayer2.addComponent<TransformComponent>(1000 , 300);
 	newPlayer2.addComponent<SpriteComponent>("player2" , false);
 	newPlayer2.addComponent<KeyboardController2>();
 	newPlayer2.addComponent<ColliderComponent>("player2");
@@ -87,7 +90,8 @@ void Game::init(const char* title, int width, int height, bool fullscreen)
 
 	SDL_Color black = { 0, 0, 0,0 };
 
-	label.addComponent<UILabel>(595, 50, "Test String", "arial", black);	
+	label.addComponent<UILabel>(595, 50, "Test String", "arial", black);
+	//label2.addComponent<UILabel>(595, 50, "Player 2 WIN!!", "arial", black);
 }
 
 
@@ -199,6 +203,14 @@ void Game::render()
 		scene->Render();
 		p1blood->Render(0);
 		p2blood->Render(0);
+		
+		SDL_Color black = { 0, 0, 0,0 };
+		if(p1hp <= 0 )label2.addComponent<UILabel>(450, 450, "Player 2 WIN!!", "arial2", black);
+		else if (p2hp <= 0)label2.addComponent<UILabel>(450, 450, "Player 1 WIN!!", "arial2", black);
+		else if(p1hp < p2hp)label2.addComponent<UILabel>(450, 450, "Player 2 WIN!!", "arial2", black);
+		else if(p1hp > p2hp)label2.addComponent<UILabel>(450, 450, "Player 1 WIN!!", "arial2", black);
+		else label2.addComponent<UILabel>(450, 450, "Player  TIE!!", "arial2", black);
+		label2.draw();
 		SDL_RenderPresent(renderer);
 		return;
 	}
@@ -228,6 +240,8 @@ void Game::clean()
 {
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(renderer);
+	TTF_Quit();
+	IMG_Quit();
 	SDL_Quit();
 	std::cout << "Game Cleaned" << std::endl;
 

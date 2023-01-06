@@ -85,31 +85,7 @@ bool init()
                 {
                     printf("SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError());
                     success = false;
-                }
-                ////initilize character list
-                //cha_List[Yeh] = new Character(Yeh,
-                //    "img/yeh.png",
-                //    "img/b_yeh.png");
-
-                //cha_List[David] = new Character(David,
-                //    "img/david.png",
-                //    "img/b_david.png");
-
-                //cha_List[Huang] = new Character(Huang,
-                //    "img/huang.png",
-                //    "img/b_huang.png");
-
-                //cha_List[Yang] = new Character(Yang,
-                //    "img/yang.png",
-                //    "img/b_yang.png");
-
-                //cha_List[Article] = new Character(Article,
-                //    "img/article.png",
-                //    "img/b_article.png");
-
-                //cha_List[Li] = new Character(Li,
-                //    "img/li.png",
-                //    "img/b_li.png");
+                }   
             }
         }
     }
@@ -147,8 +123,8 @@ void putMedia(scenario s)
         if (!ruleon) RuleTexture.loadFromFile("img/rulebtn.png");
         else RuleTexture.loadTexture2("img/rulebtn.png", 401, 151);
         gSceneTexture.render((gWindow.getWidth() - gSceneTexture.getWidth()) / 2, (gWindow.getHeight() - gSceneTexture.getHeight()) / 2);
-        StartTexture.render(gWindow.getWidth() * 11 / 20, gWindow.getHeight() * 3 / 5, NULL, 0, NULL, SDL_FLIP_NONE);
-        RuleTexture.render(gWindow.getWidth() * 6 / 20, gWindow.getHeight() * 3 / 5, NULL, 0, NULL, SDL_FLIP_NONE);
+        StartTexture.render(gWindow.getWidth() * 10 / 20, gWindow.getHeight() * 3 / 5, NULL, 0, NULL, SDL_FLIP_NONE);
+        RuleTexture.render(gWindow.getWidth() * 5 / 20, gWindow.getHeight() * 3 / 5, NULL, 0, NULL, SDL_FLIP_NONE);
         Start.work = 1;
         Rule.work = 1;
         Back.work = 0;
@@ -162,7 +138,7 @@ void putMedia(scenario s)
         if (!backon) BackTexture.loadFromFile("img/backbtn.png");
         else BackTexture.loadTexture2("img/backbtn.png", 281, 95);
         gSceneTexture.render((gWindow.getWidth() - gSceneTexture.getWidth()) / 2, (gWindow.getHeight() - gSceneTexture.getHeight()) / 2);
-        BackTexture.render(gWindow.getWidth() * 18 / 40, gWindow.getHeight() * 8 / 10);
+        BackTexture.render(gWindow.getWidth() * 17 / 40, gWindow.getHeight() * 8 / 10);
         Start.work = 0;
         Start.mCurrentSprite = BUTTON_SPRITE_MOUSE_OUT;
         Rule.work = 0;
@@ -186,12 +162,13 @@ void putMedia(scenario s)
         
             if (p1 != 0)
             {
-                SDL_Color textColor = { 0, 0, 0 };
-                if (!gTextTexture1.loadFromRenderedText("Player1: Yeh (create another gTextTexture and render it) ", textColor))
-                {
-                    printf("Failed to render text texture!\n");
-                }
-                gTextTexture1.render((SCREEN_WIDTH - gTextTexture1.getWidth()) / 2, (SCREEN_HEIGHT - gTextTexture1.getHeight()) / 2); //edit this to change location
+                //SDL_Color textColor = { 0, 0, 0 };
+                
+                //if (!gTextTexture1.loadFromRenderedText("Player1: Yeh (create another gTextTexture and render it) ", textColor))
+                //{
+                  // printf("Failed to render text texture!\n");
+                //}
+                //gTextTexture1.render((SCREEN_WIDTH - gTextTexture1.getWidth()) / 2, (SCREEN_HEIGHT - gTextTexture1.getHeight()) / 2); //edit this to change location
                 if (p2 == 0)
                 {
                     p2 = getid.getp1();
@@ -240,7 +217,7 @@ void putMedia(scenario s)
 
 
 
-void ingame() {
+void ingame(SDL_Window* win,SDL_Renderer* ren) {
 
     Game* game = nullptr;
     const int FPS = 60;
@@ -249,7 +226,7 @@ void ingame() {
     Uint32 frameStart;
     int frameTime;
 
-    game = new Game(p1, p2);
+    game = new Game(win, ren, p1, p2);
 
     game->init("game", 1280, 720, true);
 
@@ -291,8 +268,8 @@ void close()
     gSceneTexture.free();
     StartTexture.free();
     RuleTexture.free();
-    SDL_DestroyRenderer(gRenderer);
-    gWindow.free();
+    //SDL_DestroyRenderer(gRenderer);
+    //gWindow.free();
     TTF_Quit();
     IMG_Quit();
     SDL_Quit();
@@ -409,16 +386,14 @@ int main(int argc, char* args[]) {
                 //}
                 s = playing;
                 SDL_RenderClear(gRenderer);
-                
-                putMedia(s);
                 SDL_RenderPresent(gRenderer);
-                close();
-                ingame();
+                //close();
+                ingame(gWindow.getWindow(), gRenderer);
                 break;
             }
         }
     }
-    close();
+    //close();
     return 0;
 }
 

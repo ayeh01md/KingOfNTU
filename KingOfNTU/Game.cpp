@@ -35,7 +35,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen)
 		flags = SDL_WINDOW_FULLSCREEN;
 	}
 
-
+	/*
 	if (SDL_Init(SDL_INIT_EVERYTHING) == 0)
 	{
 		std::cout << "Subsystem Initialised!" << std::endl;
@@ -46,9 +46,10 @@ void Game::init(const char* title, int width, int height, bool fullscreen)
 		{
 			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 		}
-		isRunning = true;
 		
-	}
+		
+	}*/
+	isRunning = true;
 	if (TTF_Init() == -1)
 	{
 		std::cout << "Error : SDL_TTF" << std::endl;

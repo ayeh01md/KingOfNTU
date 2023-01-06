@@ -16,7 +16,7 @@ LWindow::LWindow()
 
 bool LWindow::init()
 {
-    mWindow = SDL_CreateWindow("King of NTU", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_MAXIMIZED);
+    mWindow = SDL_CreateWindow("King of NTU", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, 0);
     if (mWindow != NULL)
     {
         mWidth = SCREEN_WIDTH;
